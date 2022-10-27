@@ -18,18 +18,14 @@ const SignUpForm = () => {
     const passwordConfirmError = document.querySelector(
       ".password-confirm.error"
     );
-    const termsError = document.querySelector(".terms.error");
-
-    passwordConfirmError.innerHTML = "";
-    termsError.innerHTML = "";
+  
 
     if (password !== controlPassword || !terms.checked) {
       if (password !== controlPassword)
-        passwordConfirmError.innerHTML =
-          "Les mots de passe ne correspondent pas";
-
+       console.log('error')
       if (!terms.checked)
-        termsError.innerHTML = "Veuillez valider les conditions générales";
+       console.log('')
+        
     } else {
       await axios({
         method: "post",

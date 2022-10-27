@@ -15,10 +15,6 @@ const store = createStore(
   rootReducer,
   composeWithDevTools(applyMiddleware(thunk))
 );
-
-store.dispatch(getUsers());
-
-
 ReactDOM.render(
   <Provider store={store}>
     <App />

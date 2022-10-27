@@ -1,13 +1,10 @@
+import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { UidContext } from "../components/AppContext";
-import LeftNav from "../components/LeftNav";
-import { useSelector } from "react-redux";
 import Log from "../components/Log";
-import { useDispatch } from "react-redux";
-import axios from "axios";
-import "./style.css";
 import SimpleMap from "../components/SimpleMap";
 import EventsDetails from "./EventsDetails";
+import "./style.css";
 const Home = () => {
   const uid = useContext(UidContext);
 
@@ -16,30 +13,35 @@ const Home = () => {
   const [description, setDescription] = useState("");
   const [picture, setPicture] = useState("");
   const [category, setCategory] = useState("");
-  const [modal,setModal]=useState(false)
+  const [modal, setModal] = useState(false);
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
   const [ItemId, setItemId] = useState("");
   
+  const [pointTitle,setPointTitle]=useState({})
+  const [pointType,setPointType]=useState({})
+  
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((position)=>{
-      setLatitude(position.coords.latitude)
-      setLongitude(position.coords.longitude)
-    })
+    navigator.geolocation.getCurrentPosition((position) => {
+      setLatitude(position.coords.latitude);
+      setLongitude(position.coords.longitude);
+    });
   }, []);
 
   useEffect(() => {
-    if(!latitude || !longitude) return
+    if (!latitude || !longitude) return;
     const fetchEvents = async () => {
       await axios
-        .get(`${process.env.REACT_APP_API_URL}api/events?long=${longitude}&lat=${latitude}`)
+        .get(
+          `${process.env.REACT_APP_API_URL}api/events?long=${longitude}&lat=${latitude}`
+        )
         .then((res) => {
           setEvents(res.data);
         })
         .catch((err) => console.log("No Events"));
     };
     fetchEvents();
-  }, [latitude,longitude]);
+  }, [latitude, longitude]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -49,20 +51,22 @@ const Home = () => {
     data.append("description", description);
     data.append("picture", picture);
     data.append("category", category);
-    data.append("latitude", latitude);
-    data.append("longitude", longitude);
-
+    const location={"title":'club sportif',"type":10.80}
+    data.append("location",location)
+    console.log(location);
     axios
-      .post(`${process.env.REACT_APP_API_URL}api/events/add`,data)
+      .post(`${process.env.REACT_APP_API_URL}api/events/add`, data)
       .then((res) => {
         alert(res);
+        console.log(res)
       })
       .catch((err) => alert("error", data));
   };
-  const handleModal = (id)=>{
-    setModal(true)
-    setItemId(id)
-  }
+
+  const handleModal = (id) => {
+    setModal(true);
+    setItemId(id);
+  };
   return (
     <>
       <div className="home">
@@ -70,7 +74,7 @@ const Home = () => {
           <div className="home-header">
             {uid ? (
               <div>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} type="multipart/form-data">
                   <div className="row">
                     <div className="col-lg-4 mb-3">
                       <label for="tite" className="form-label">
@@ -101,8 +105,8 @@ const Home = () => {
                         name="description"
                         placeholder="...."
                       />
-                      <label for="category" className="form-label">
-                        Catégorie
+                      <label for="type" className="form-label">
+                        type
                       </label>
                       <input
                         value={category}
@@ -113,7 +117,7 @@ const Home = () => {
                         className="form-control"
                         name="category"
                         id="category"
-                        placeholder="category"
+                        placeholder="type"
                       />
 
                       <label for="picture" className="form-label">
@@ -155,30 +159,19 @@ const Home = () => {
                     </button>
                   </div>
                 </div>
-
-                <div className="section">
-                  <div className="row">
-                  {modal&&<EventsDetails id={ItemId}/>}
-                    {events ? (
-                      events.map((item) => {
-                       
-                        return (
-                          <div className="col-lg-3 col" onClick={()=>handleModal(item._id)}>
-                          
-                            <h3 className="titre">{item.title}</h3>
-                            <p>
-                              <br></br>•{item.description}
-                            </p>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div></div>
-                    )}
-                  </div>
-                </div>
               </>
             )}
+          </div>
+          <div className="section">
+            <div className="row">
+              {modal && <EventsDetails id={ItemId} />}
+              {!!latitude && !!longitude && (
+                <SimpleMap
+                  center={{ lat: latitude, long: longitude }}
+                  items={events}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
