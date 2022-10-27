@@ -1,0 +1,48 @@
+.section {
+  margin-top: 5%;
+  display: flex;
+  justify-content: space-around;
+  justify-content: start;
+  margin-right: 70px;
+  width: 100%;
+}
+.titre{
+    align-self: center;
+    font-size: 2rem;
+}
+.col {
+  margin: 15px 15px 15px 15px;
+  background: rgb(219, 219, 219);
+  border-radius: 10px;
+  margin-bottom: 5%;
+  padding: 20px 12px;
+  box-sizing: border-box;
+  transition: 0.5s;
+}
+.col:hover {
+  box-shadow: 0 0 20px 0px rgba(0, 0, 0, 2);
+}
+
+h3 {
+  text-align: center;
+  font-size: 600;
+  margin: 10px 0;
+}
+
+@media (max-width: 700px) {
+  .section2 {
+    flex-direction: row;
+  }
+}
+
+.events-style{
+    background-color: #F8F9F9;
+}
+.events-style .btn{
+    border: 1px solid #DBDBDB;
+    margin-right: 1rem;
+}
+.events-style .btn:hover{
+    cursor: pointer;
+    background-color: green;
+}
