@@ -17,7 +17,7 @@ const Home = () => {
   const [description, setDescription] = useState("");
   const [picture, setPicture] = useState("");
   const [category, setCategory] = useState("");
-
+  const [modal,setModal]=useState(false)
   const [latitude, setLatitude] = useState("");
   const [longitude, setLangitude] = useState("");
   useEffect(() => {
@@ -152,11 +152,13 @@ const Home = () => {
 
                 <div className="section">
                   <div className="row">
-                  <EventsDetails />
+                 
                     {events ? (
                       events.map((item) => {
+                       
                         return (
-                          <div className="col-lg-3 col">
+                          <div className="col-lg-3 col" onClick={()=>setModal(true)}>
+                          {modal&&<EventsDetails id={item._id}/>}
                             <h3 className="titre">{item.title}</h3>
                             <p>
                               <br></br>•{item.description}
@@ -171,4 +173,11 @@ const Home = () => {
                 </div>
               </>
             )}
-        
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Home;
