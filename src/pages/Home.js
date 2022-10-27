@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { UidContext } from "../components/AppContext";
 import LeftNav from "../components/LeftNav";
-import { getEvents } from "../actions/events";
 import { useSelector } from "react-redux";
 import Log from "../components/Log";
 import { useDispatch } from "react-redux";
@@ -19,25 +18,28 @@ const Home = () => {
   const [category, setCategory] = useState("");
   const [modal,setModal]=useState(false)
   const [latitude, setLatitude] = useState("");
-  const [longitude, setLangitude] = useState("");
+  const [longitude, setLongitude] = useState("");
+  const [ItemId, setItemId] = useState("");
+  
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position)=>{
       setLatitude(position.coords.latitude)
-      setLangitude(position.coords.longitude)
+      setLongitude(position.coords.longitude)
     })
   }, []);
 
   useEffect(() => {
+    if(!latitude || !longitude) return
     const fetchEvents = async () => {
       await axios
-        .get(`${process.env.REACT_APP_API_URL}api/events/getevents/`)
+        .get(`${process.env.REACT_APP_API_URL}api/events?long=${longitude}&lat=${latitude}`)
         .then((res) => {
           setEvents(res.data);
         })
         .catch((err) => console.log("No Events"));
     };
     fetchEvents();
-  }, []);
+  }, [latitude,longitude]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -51,12 +53,16 @@ const Home = () => {
     data.append("longitude", longitude);
 
     axios
-      .post(`${process.env.REACT_APP_API_URL}api/events/addevents/`, data)
+      .post(`${process.env.REACT_APP_API_URL}api/events/add`,data)
       .then((res) => {
         alert(res);
       })
       .catch((err) => alert("error", data));
   };
+  const handleModal = (id)=>{
+    setModal(true)
+    setItemId(id)
+  }
   return (
     <>
       <div className="home">
@@ -68,7 +74,7 @@ const Home = () => {
                   <div className="row">
                     <div className="col-lg-4 mb-3">
                       <label for="tite" className="form-label">
-                        tite de l'evenement
+                        titre de l'evenement
                       </label>
                       <input
                         value={title}
@@ -152,13 +158,13 @@ const Home = () => {
 
                 <div className="section">
                   <div className="row">
-                 
+                  {modal&&<EventsDetails id={ItemId}/>}
                     {events ? (
                       events.map((item) => {
                        
                         return (
-                          <div className="col-lg-3 col" onClick={()=>setModal(true)}>
-                          {modal&&<EventsDetails id={item._id}/>}
+                          <div className="col-lg-3 col" onClick={()=>handleModal(item._id)}>
+                          
                             <h3 className="titre">{item.title}</h3>
                             <p>
                               <br></br>•{item.description}

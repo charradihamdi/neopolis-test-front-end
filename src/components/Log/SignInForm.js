@@ -25,6 +25,9 @@ const SignInForm = () => {
         } else {
           window.location = "/";
         }
+
+        setEmail("")
+        setPassword("")
       })
       .catch((err) => {
         console.log(err);

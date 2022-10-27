@@ -17,7 +17,6 @@ export default function EventsDetails({id}) {
       <div className="modal">
         <h3>{event.title}</h3>
         <span className="cross">&#10005;</span>
-        
         <ul>
           <li>
             <div style={{width:"40rem"}}>description:{event.description}</div>
